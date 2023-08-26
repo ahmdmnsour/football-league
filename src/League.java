@@ -4,19 +4,36 @@ import java.util.List;
 import java.util.Random;
 
 public class League {
+    private int leagueId;
     private String leagueName;
     private List<Team> teams;
 
     public League() {
     }
 
-    public League(String leagueName) {
+    public League(int leagueId, String leagueName) {
+        this.leagueId = leagueId;
         this.leagueName = leagueName;
         this.teams = new ArrayList<>();
     }
 
-    public League(String leagueName, List<Team> teams) {
+    public void setLeagueId(int leagueId) {
+        this.leagueId = leagueId;
+    }
+
+    public String getLeagueName() {
+        return leagueName;
+    }
+
+    public void setLeagueName(String leagueName) {
         this.leagueName = leagueName;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
         this.teams = teams;
     }
 

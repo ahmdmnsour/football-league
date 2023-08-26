@@ -1,26 +1,33 @@
-import java.awt.desktop.SystemEventListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Team {
+    private int teamId;
     private String teamName;
     private String coachName;
-    private List<String> playersNames;
+    private List<Player> players;
 
     public Team() {
-        playersNames = new ArrayList<>();
+        players = new ArrayList<>();
     }
 
     public Team(String teamName) {
         this.teamName = teamName;
-        playersNames = new ArrayList<>();
+        players = new ArrayList<>();
     }
 
-    public Team(String teamName, String coachName, List<String> playersNames) {
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
+    }
+
+    public Team(String teamName, String coachName, List<Player> players) {
         this.teamName = teamName;
         this.coachName = coachName;
-        this.playersNames = playersNames;
+        this.players = players;
 
     }
 
@@ -40,27 +47,25 @@ public class Team {
         this.coachName = coachName;
     }
 
-    public List<String> getPlayersNames() {
-        return playersNames;
+    public List<Player> getPlayers() {
+        return players;
     }
 
-    public void setPlayersNames(List<String> playersNames) {
-        this.playersNames = playersNames;
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 
-    public void addPlayer(String playerName) {
-        if (playersNames.contains(playerName))
-            System.out.println(playerName + " already plays in " + teamName);
+    public void addPlayer(Player player) {
+        if (players.contains(player))
+            System.out.println(player.getName() + " already plays in " + teamName);
         else
-            this.playersNames.add(playerName);
+            this.players.add(player);
     }
 
-    public void removePlayer(String playerName) {
-        if (!playersNames.contains(playerName))
-            System.out.println(playerName + " is not in " + teamName);
+    public void removePlayer(Player player) {
+        if (!players.contains(player))
+            System.out.println(player.getName() + " is not in " + teamName);
         else
-            this.playersNames.remove(playerName);
+            this.players.remove(player);
     }
-
-
 }

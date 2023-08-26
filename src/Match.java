@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Random;
 
 public class Match {
+    private int matchId;
     private Team homeTeam;
     private Team awayTeam;
     private Date matchDate;
     private int homeTeamGoals;
     private int awayTeamGoals;
     private Team winner;
-    private List<String> goalScorers;
+    private List<Player> goalScorers;
 
     public Match() { }
 
@@ -21,66 +22,6 @@ public class Match {
         this.goalScorers = new ArrayList<>();
 
         simulateMatch();
-    }
-
-    public Team getHomeTeam() {
-        return homeTeam;
-    }
-
-    public void setHomeTeam(Team homeTeam) {
-        this.homeTeam = homeTeam;
-    }
-
-    public Team getAwayTeam() {
-        return awayTeam;
-    }
-
-    public void setAwayTeam(Team awayTeam) {
-        this.awayTeam = awayTeam;
-    }
-
-    public Date getMatchDate() {
-        return matchDate;
-    }
-
-    public void setMatchDate(Date matchDate) {
-        this.matchDate = matchDate;
-    }
-
-    public int getHomeTeamGoals() {
-        return homeTeamGoals;
-    }
-
-    public void setHomeTeamGoals(int homeTeamGoals) {
-        this.homeTeamGoals = homeTeamGoals;
-    }
-
-    public int getAwayTeamGoals() {
-        return awayTeamGoals;
-    }
-
-    public void setAwayTeamGoals(int awayTeamGoals) {
-        this.awayTeamGoals = awayTeamGoals;
-    }
-
-    public Team getWinner() {
-        return winner;
-    }
-
-    public void setWinner(Team winner) {
-        this.winner = winner;
-    }
-
-    public List<String> getGoalScorers() {
-        return goalScorers;
-    }
-
-    public void setGoalScorers(List<String> goalScorers) {
-        this.goalScorers = goalScorers;
-    }
-
-    public String getFullTimeScore() {
-        return homeTeamGoals + " - " + awayTeamGoals;
     }
 
     private void simulateMatch() {
@@ -97,12 +38,12 @@ public class Match {
         }
 
         for (int i = 0; i < homeTeamGoals; i++) {
-            String scorer = homeTeam.getPlayersNames().get(random.nextInt(homeTeam.getPlayersNames().size()));
+            Player scorer = homeTeam.getPlayers().get(random.nextInt(homeTeam.getPlayers().size()));
             goalScorers.add(scorer);
         }
 
         for (int i = 0; i < awayTeamGoals; i++) {
-            String scorer = awayTeam.getPlayersNames().get(random.nextInt(awayTeam.getPlayersNames().size()));
+            Player scorer = awayTeam.getPlayers().get(random.nextInt(awayTeam.getPlayers().size()));
             goalScorers.add(scorer);
         }
     }
