@@ -6,7 +6,8 @@ public class Player {
     public Player() {
     }
 
-    public Player(String name) {
+    public Player(int playerId, String name) {
+        this.playerId = playerId;
         this.name = name;
     }
 

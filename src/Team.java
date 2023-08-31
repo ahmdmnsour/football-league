@@ -5,15 +5,16 @@ public class Team {
     private int teamId;
     private String teamName;
     private String coachName;
-    private List<Player> players;
+    private List<Integer> playersIds;
 
     public Team() {
-        players = new ArrayList<>();
+        playersIds = new ArrayList<>();
     }
 
-    public Team(String teamName) {
+    public Team(int teamId, String teamName) {
+        this.teamId = teamId;
         this.teamName = teamName;
-        players = new ArrayList<>();
+        playersIds = new ArrayList<>();
     }
 
     public int getTeamId() {
@@ -24,10 +25,10 @@ public class Team {
         this.teamId = teamId;
     }
 
-    public Team(String teamName, String coachName, List<Player> players) {
+    public Team(String teamName, String coachName, List<Integer> playersIds) {
         this.teamName = teamName;
         this.coachName = coachName;
-        this.players = players;
+        this.playersIds = playersIds;
 
     }
 
@@ -47,25 +48,11 @@ public class Team {
         this.coachName = coachName;
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public List<Integer> getPlayersIds() {
+        return playersIds;
     }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-    }
-
-    public void addPlayer(Player player) {
-        if (players.contains(player))
-            System.out.println(player.getName() + " already plays in " + teamName);
-        else
-            this.players.add(player);
-    }
-
-    public void removePlayer(Player player) {
-        if (!players.contains(player))
-            System.out.println(player.getName() + " is not in " + teamName);
-        else
-            this.players.remove(player);
+    public void setPlayers(List<Integer> playersIds) {
+        this.playersIds = playersIds;
     }
 }

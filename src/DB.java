@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DB {
     String jdbcUrl = "jdbc:postgresql://localhost:5432/football";
@@ -6,102 +8,113 @@ public class DB {
     String password = "admin";
     static Connection connection;
 
-    public DB() {
-        try {
-            connection = DriverManager.getConnection(jdbcUrl, username, password);
-
-            listLeagues();
-            listTeamsInLeague(1); // Assuming league ID 1
-            listPlayersInTeam(1); // Assuming team ID 1
-            listPlayedMatches();
-            displayMatchInfo(1); // Assuming match ID 1
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public DB() throws SQLException {
+        connection = DriverManager.getConnection(jdbcUrl, username, password);
     }
 
-    public void listLeagues() throws SQLException {
-        String query = "SELECT league_name FROM leagues";
+    public ArrayList<League> getLeagues() throws SQLException {
+        ArrayList<League> leagues = new ArrayList<>();
+        String query = "SELECT league_id, league_name FROM leagues";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next())
-                System.out.println(resultSet.getString("league_name"));
+                leagues.add(new League(resultSet.getInt(1), resultSet.getString(2)));
         }
+        return leagues;
     }
 
-    private void listTeamsInLeague(int leagueId) throws SQLException {
-        String query = "SELECT t.team_name FROM teams t " +
+    public ArrayList<Team> getTeamsFromLeague(int leagueId) throws SQLException {
+        ArrayList<Team> teams = new ArrayList<>();
+        String query = "SELECT * FROM teams t " +
                 "INNER JOIN team_league tl ON t.team_id = tl.team_id " +
                 "WHERE tl.league_id = " + leagueId;
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
-                String name = resultSet.getString("team_name");
-                System.out.println(name);
+                teams.add(new Team(resultSet.getInt(1), resultSet.getString(2)));
             }
-
         }
+        return teams;
     }
 
-    private void listPlayersInTeam(int teamId) throws SQLException {
+    public ArrayList<Integer> getTeamsIdsFromLeague(int leagueId) throws SQLException {
+        ArrayList<Integer> teams = new ArrayList<>();
+        String query = "SELECT * FROM teams t " +
+                "INNER JOIN team_league tl ON t.team_id = tl.team_id " +
+                "WHERE tl.league_id = " + leagueId;
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            while (resultSet.next()) {
+                teams.add(resultSet.getInt(1));
+            }
+        }
+        return teams;
+    }
+
+    public ArrayList<Team> getAllTeams() throws SQLException {
+        ArrayList<Team> teams = new ArrayList<>();
+        String query = "SELECT * FROM teams";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            while (resultSet.next()) {
+                teams.add(new Team(resultSet.getInt(1), resultSet.getString(2)));
+            }
+        }
+        return teams;
+    }
+
+    public ArrayList<Player> getPlayersFromTeam(int teamId) throws SQLException {
+        ArrayList<Player> players = new ArrayList<>();
         String query = "SELECT name FROM players WHERE team_id = " + teamId;
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
-                String name = resultSet.getString("name");
-                System.out.println(name);
+                players.add(new Player(resultSet.getInt(1), resultSet.getString(2)));
             }
         }
+        return players;
     }
 
-    private void listPlayedMatches() throws SQLException {
+    public ArrayList<Match> getMatches() throws SQLException {
+        ArrayList<Match> matches = new ArrayList<>();
         String query = "SELECT * FROM matches";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
                 int id = resultSet.getInt("match_id");
-                int team1Id = resultSet.getInt("home_team_id");
-                int team2Id = resultSet.getInt("away_team_id");
+                int homeTeamId = resultSet.getInt("home_team_id");
+                int awayTeamId = resultSet.getInt("away_team_id");
                 Timestamp matchDate = resultSet.getTimestamp("match_date");
                 int homeTeamGoals = resultSet.getInt("home_team_goals");
                 int awayTeamGoals = resultSet.getInt("away_team_goals");
                 int winnerTeamId = resultSet.getInt("winner_team_id");
-
-                String winner = (winnerTeamId == 0) ? "Draw" : (winnerTeamId == team1Id) ? "Team 1" : "Team 2";
-
-                System.out.println("Match ID: " + id);
-                System.out.println("Teams: Team " + team1Id + " vs Team " + team2Id);
-                System.out.println("Score: " + homeTeamGoals + " - " + awayTeamGoals);
-                System.out.println("Winner: " + winner);
-                System.out.println("Match Date: " + matchDate);
-                System.out.println();
+                Match match = new Match(id, homeTeamId, awayTeamId, matchDate, homeTeamGoals, awayTeamGoals, winnerTeamId);
+                matches.add(match);
             }
         }
+        return matches;
     }
 
-    private void displayMatchInfo(int matchId) throws SQLException {
-        String query = "SELECT * From matches WHERE match_id = " + matchId;
+    public String getTeamName(int teamId) throws SQLException {
+        String query = "SELECT * FROM teams WHERE team_id = " + teamId;
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
-            while (resultSet.next()) {
-                int id = resultSet.getInt("match_id");
-                int team1Id = resultSet.getInt("home_team_id");
-                int team2Id = resultSet.getInt("away_team_id");
-                Timestamp matchDate = resultSet.getTimestamp("match_date");
-                int homeTeamGoals = resultSet.getInt("home_team_goals");
-                int awayTeamGoals = resultSet.getInt("away_team_goals");
-                int winnerTeamId = resultSet.getInt("winner_team_id");
-
-                String winner = (winnerTeamId == 0) ? "Draw" : (winnerTeamId == team1Id) ? "Team 1" : "Team 2";
-
-                System.out.println("Match ID: " + id);
-                System.out.println("Teams: Team " + team1Id + " vs Team " + team2Id);
-                System.out.println("Score: " + homeTeamGoals + " - " + awayTeamGoals);
-                System.out.println("Winner: " + winner);
-                System.out.println("Match Date: " + matchDate);
-                System.out.println();
-            }
+            while (resultSet.next())
+                return resultSet.getString(2);
         }
+        return null;
+    }
+
+    public void insertNewMatch(Match match) throws SQLException {
+        String query = "INSERT INTO matches (home_team_id, away_team_id, match_date, home_team_goals, away_team_goals, winner_team_id)\n" +
+                "VALUES" + "("
+                + match.getHomeTeamId() + ", "
+                + match.getAwayTeamId() + ", "
+                + "'" + match.getMatchDate() + "'" + ", "
+                + match.getHomeTeamGoals() + ", "
+                + match.getAwayTeamGoals() + ", "
+                + match.getWinnerId() + ");";
+        Statement statement = connection.createStatement();
+        int insertion = statement.executeUpdate(query);
     }
 }
